@@ -1,0 +1,16 @@
+name: CI
+
+on:
+  push:
+    branches: [main, kmart-dev-ollama-0.4.1-upgrade]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run a script
+        run: |
+          echo "Hello, world!"
+          echo "This is a GitHub Actions job running on a GitHub-hosted runner."
