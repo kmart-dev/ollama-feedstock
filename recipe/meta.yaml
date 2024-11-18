@@ -37,14 +37,14 @@ source:
 build:
   skip: true  # We're using pre-built binaries, so no building is required
 
-requirements:
-  run:
-    - libcxx
-    - libgcc-ng
-    - libgfortran-ng
-    - zlib
-    - libmagic
-    - libcurl
+#requirements:
+#  run:
+#    - libcxx
+#    - libgcc-ng
+#    - libgfortran-ng
+#    - zlib
+#    - libmagic
+#    - libcurl
 
 test:
   commands:
