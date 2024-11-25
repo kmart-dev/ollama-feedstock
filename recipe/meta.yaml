@@ -1,50 +1,23 @@
 {% set name = "ollama" %}
-{% set version = "0.4.2" %}
+{% set version = "0.4.4" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  - url: https://github.com/ollama/ollama/releases/download/v{{ version }}/ollama-darwin
-    sha256: 80e58d4cba43419919a730edd34bb7d7efbca175108865409d59b755f2737c09
-    # macOS binary for x86_64 (darwin)
-  - url: https://github.com/ollama/ollama/releases/download/v{{ version }}/ollama-linux-amd64.tgz
-    sha256: 485b1b223571828a46532d55c118ea0c686af6acfb83876a9579ec1790d5cb33
-    # Linux binary for amd64 (x86_64)
-  - url: https://github.com/ollama/ollama/releases/download/v{{ version }}/ollama-linux-amd64-rocm.tgz
-    sha256: 28cf65a8d66bc1108070fb616f4d8649b750dd3f1bb924b6bbae03d485aea2d2
-    # Linux binary for AMD ROCm (useful for AMD GPUs)
-  - url: https://github.com/ollama/ollama/releases/download/v{{ version }}/ollama-linux-arm64.tgz
-    sha256: 52e0b645de03b81a9efebc303a23c61812c5f61e4b8b390c1a142a8ecd4783a4
-    # Linux binary for arm64 (general ARM-based architecture)
-  - url: https://github.com/ollama/ollama/releases/download/v{{ version }}/ollama-linux-arm64-jetpack5.tgz
-    sha256: 9f21a138e5afd50fd7a486c06d05f00ed1ec94433add8115b4c7c5a34046b9a2
-    # Linux binary for ARM64 JetPack 5 (specific to NVIDIA Jetson platforms)
-  - url: https://github.com/ollama/ollama/releases/download/v{{ version }}/ollama-linux-arm64-jetpack6.tgz
-    sha256: 6466cbc7bdb542dce1994fcf4934aa88a0f6d1243ab18abf6ac066abfbf345bd
-    # Linux binary for ARM64 JetPack 6 (specific to NVIDIA Jetson platforms)
-  - url: https://github.com/ollama/ollama/releases/download/v{{ version }}/ollama-windows-amd64.zip
-    sha256: ed8c33cd0e6bd6114ab170fb24595cbf63eee3ebabe9ec2994ac378f1fe5be37
-    # Windows binary for amd64
-  - url: https://github.com/ollama/ollama/releases/download/v{{ version }}/ollama-windows-arm64.zip
-    sha256: be7d4b57f40be4dfbda06cf944d5e26f8fb6042d8d8651cbb90b3add4a551f6b
-    # Windows binary for arm64
-  - url: https://github.com/ollama/ollama/releases/download/v{{ version }}/OllamaSetup.exe
-    sha256: 047d20edf8b2bf07cccc52eff8076c2735cadd233a80f19ad03a3676d31b714d
-    # Windows installer executable
+  url: https://github.com/ollama/ollama/releases/download/v{{ version }}/ollama-linux-amd64.tgz # [linux]
+  sha256: c9d5966db56dd7d248085d30ee9d97ca15b0de3dfa65d0d120100b4ed0176ebe 
 
 build:
-  skip: true  # We're using pre-built binaries, so no building is required
-
-#requirements:
-#  run:
-#    - libcxx
-#    - libgcc-ng
-#    - libgfortran-ng
-#    - zlib
-#    - libmagic
-#    - libcurl
+  number: 0
+  binary_relocation: false  # [osx]
+#  script:
+#    - mkdir -p {PREFIX}/bin {PREFIX}/lib/ollama
+#    - cp -r ollama-linux-amd64.tgz $SRC_DIR/
+#    - tar -xvf ollama-linux-amd64.tgz -C $SRC_DIR/
+#    - cp -r $SRC_DIR/bin/* ${PREFIX}/bin/
+#    - cp -r $SRC_DIR/lib/ollama/* ${PREFIX}/lib/ollama/
 
 test:
   commands:
@@ -57,9 +30,11 @@ about:
   license: MIT
   license_family: MIT
   license_file:
-    - LICENSE
-    - licenses/
+    - LICENSE.txt
   dev_url: https://github.com/ollama/ollama
+  description: |
+    Ollama allows you to run open-source large language models locally.
+    Get up and running with Llama 2, llama 2 uncensored, mistral, and other models.
 
 extra:
   recipe-maintainers:
