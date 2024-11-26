@@ -1,0 +1,140 @@
+Write a conda-forge feedstock recipe/meta.yaml and build.sh script for ollama that uses the upstream prebuilt ollama package, and these commands when installing natively. You'll have to adjust the installation command script to work with standard conda-forge feedstock build-locally.py of course.
+
+curl -L https://ollama.com/download/ollama-linux-amd64.tgz -o ollama-linux-amd64.tgz
+
+sudo tar -C /usr -xzf ollama-linux-amd64.tgz
+
+Here is a sample meta.yaml file for the ollama feedstock recipe:
+
+package:
+  name: ollama
+  version: '1.0'  # replace with the actual version
+
+source:
+  url: https://ollama.com/download/ollama-linux-amd64.tgz
+  sha256:  # replace with the actual sha256 checksum
+
+build:
+  number: 0
+  script: {{ PYTHON }} build.sh  # this will run the build.sh script
+
+requirements:
+  build:
+    - python
+  run:
+    - python
+
+test:
+  imports:
+    - ollama  # replace with the actual import statement
+
+about:
+  home: https://ollama.com
+  license:  # replace with the actual license
+  summary:  # replace with a brief summary of the package
+
+And here is a sample build.sh script:
+
+#!/bin/bash
+
+# Unpack the prebuilt ollama package
+tar -xzf ${SRC_DIR}/ollama-linux-amd64.tgz -C ${PREFIX}
+
+# Create a symbolic link to the ollama executable
+ln -s ${PREFIX}/usr/bin/ollama ${PREFIX}/bin/ollama
+
+Note that in the build.sh script, we use the ${SRC_DIR} variable to refer to the directory containing the source package, and the ${PREFIX} variable to refer to the directory where the package will be installed.
+
+Also, we create a symbolic link to the ollama executable in the ${PREFIX}/bin directory, so that the executable can be found by conda.
+
+You can then use the build-locally.py script from conda-forge to build the package locally.
+
+Please note that you should replace the placeholders in the meta.yaml file (e.g. version, sha256, license, summary) with the actual values for the ollama package.
+
+How do i use patchelf to modify each of these libraries to be used in a conda environment, in the spirit of conda-forge feedstock meta.yaml recipies? libcublasLt.so: RUNPATH=$ORIGIN
+
+libcublasLt.so.11: RUNPATH=$ORIGIN
+
+libcublasLt.so.11.5.1.109: RUNPATH=$ORIGIN
+
+libcublasLt.so.12: RUNPATH=$ORIGIN
+
+libcublasLt.so.12.4.5.8: RUNPATH=$ORIGIN
+
+libcublas.so: RUNPATH=$ORIGIN
+
+libcublas.so.11: RUNPATH=$ORIGIN
+
+libcublas.so.11.5.1.109: RUNPATH=$ORIGIN
+
+libcublas.so.12: RUNPATH=$ORIGIN
+
+libcublas.so.12.4.5.8: RUNPATH=$ORIGIN
+
+libcudart.so: no rpath or runpath tag found.
+
+libcudart.so.11.0: no rpath or runpath tag found.
+
+libcudart.so.11.3.109: no rpath or runpath tag found.
+
+libcudart.so.12: no rpath or runpath tag found.
+
+libcudart.so.12.4.127: no rpath or runpath tag found.
+
+libggml_cuda_v11.so: no rpath or runpath tag found.
+
+libggml_cuda_v12.so: no rpath or runpath tag found.
+
+libggml_rocm.so: RUNPATH=/opt/rocm-6.1.2/lib/llvm/bin/../../../lib
+
+libhipblas.so.2: RUNPATH=$ORIGIN
+
+libhipblas.so.2.1.60102: RUNPATH=$ORIGIN
+
+librocblas.so.4: RUNPATH=$ORIGIN
+
+librocblas.so.4.1.60102: RUNPATH=$ORIGIN
+
+You can use the patchelf command to modify the RPATH or RUNPATH of each library to point to the conda environment's lib directory. Here's an example of how you can do this in a build.sh script:
+
+#!/bin/bash
+
+# Define the conda environment's lib directory
+LIB_DIR=${PREFIX}/lib
+
+# Modify the RPATH/RUNPATH of each library
+patchelf --set-rpath ${LIB_DIR} ${PREFIX}/lib/libcublasLt.so
+patchelf --set-rpath ${LIB_DIR} ${PREFIX}/lib/libcublasLt.so.11
+patchelf --set-rpath ${LIB_DIR} ${PREFIX}/lib/libcublasLt.so.11.5.1.109
+patchelf --set-rpath ${LIB_DIR} ${PREFIX}/lib/libcublasLt.so.12
+patchelf --set-rpath ${LIB_DIR} ${PREFIX}/lib/libcublasLt.so.12.4.5.8
+patchelf --set-rpath ${LIB_DIR} ${PREFIX}/lib/libcublas.so
+patchelf --set-rpath ${LIB_DIR} ${PREFIX}/lib/libcublas.so.11
+patchelf --set-rpath ${LIB_DIR} ${PREFIX}/lib/libcublas.so.11.5.1.109
+patchelf --set-rpath ${LIB_DIR} ${PREFIX}/lib/libcublas.so.12
+patchelf --set-rpath ${LIB_DIR} ${PREFIX}/lib/libcublas.so.12.4.5.8
+
+# The following libraries do not have an RPATH/RUNPATH, so we can skip them
+# libcudart.so
+# libcudart.so.11.0
+# libcudart.so.11.3.109
+# libcudart.so.12
+# libcudart.so.12.4.127
+# libggml_cuda_v11.so
+# libggml_cuda_v12.so
+
+# Modify the RPATH/RUNPATH of the following libraries
+patchelf --set-rpath ${LIB_DIR} ${PREFIX}/lib/libggml_rocm.so
+patchelf --set-rpath ${LIB_DIR} ${PREFIX}/lib/libhipblas.so.2
+patchelf --set-rpath ${LIB_DIR} ${PREFIX}/lib/libhipblas.so.2.1.60102
+patchelf --set-rpath ${LIB_DIR} ${PREFIX}/lib/librocblas.so.4
+patchelf --set-rpath ${LIB_DIR} ${PREFIX}/lib/librocblas.so.4.1.60102
+
+This script uses the patchelf command to modify the RPATH/RUNPATH of each library to point to the conda environment's lib directory. Note that we skip the libraries that do not have an RPATH/RUNPATH.
+
+You can add this script to your meta.yaml file as a build script, like this:
+
+build:
+  script: {{ PYTHON }} build.sh
+
+This will run the build.sh script during the build process, modifying the RPATH/RUNPATH of each library as needed.
