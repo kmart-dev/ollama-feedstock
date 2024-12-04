@@ -1,5 +1,5 @@
 {% set name = "ollama" %}
-{% set version = "0.4.4" %}
+{% set version = "0.4.6" %}
 
 package:
   name: {{ name|lower }}
@@ -7,17 +7,25 @@ package:
 
 source:
   url: https://github.com/ollama/ollama/releases/download/v{{ version }}/ollama-linux-amd64.tgz # [linux]
-  sha256: c9d5966db56dd7d248085d30ee9d97ca15b0de3dfa65d0d120100b4ed0176ebe 
+#  sha256: c9d5966db56dd7d248085d30ee9d97ca15b0de3dfa65d0d120100b4ed0176ebe 
+  sha256: 1866b7fc11ee301dc3e488dc7d7631bd79e0e2a188919d7cdd1a02515087a672
 
 build:
   number: 0
-  binary_relocation: false  # [osx]
-#  script:
+#  binary_relocation: false  # [osx]
+#  skip: true
+  script: ""
 #    - mkdir -p {PREFIX}/bin {PREFIX}/lib/ollama
 #    - cp -r ollama-linux-amd64.tgz $SRC_DIR/
 #    - tar -xvf ollama-linux-amd64.tgz -C $SRC_DIR/
 #    - cp -r $SRC_DIR/bin/* ${PREFIX}/bin/
 #    - cp -r $SRC_DIR/lib/ollama/* ${PREFIX}/lib/ollama/
+
+#requirements:
+#  host:
+#    - xz
+#  run:
+#    - xz
 
 test:
   commands:
