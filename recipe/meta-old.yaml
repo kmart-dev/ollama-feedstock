@@ -1,0 +1,31 @@
+package:
+  name: ollama
+  version: "0.5.4"
+
+source:
+  path: ollama-linux-amd64.tgz
+  # url: https://github.com/ollama/ollama/releases/download/v0.5.4/ollama-linux-amd64.tgz 
+  #sha256: 5f44dc7f21c4f0050c4da6649bf1501707e782b57a3f5e899e4fd0e2ffc183cb
+  sha256: 6f44dc7f21c4f0050c4da6649bf1501707e782b57a3f5e899e4fd0e2ffc183cb
+build:
+  number: 0
+  script: |
+    mkdir -p $PREFIX/bin
+    mkdir -p $PREFIX/lib
+    tar -xzf $SRC_DIR/ollama-linux-amd64.tgz -C $SRC_DIR
+    patchelf --set-rpath $PREFIX/lib $SRC_DIR/bin/ollama
+    mv $SRC_DIR/bin/* $PREFIX/bin/
+    mv $SRC_DIR/lib/* $PREFIX/lib/
+
+requirements:
+  build:
+    - patchelf
+
+about:
+  home: http://example.com
+  license: MIT
+  summary: A brief summary of the package.
+
+extra:
+  recipe-maintainers:
+    - kmart-dev
