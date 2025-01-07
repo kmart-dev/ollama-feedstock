@@ -29,10 +29,20 @@ requirements:
     - libstdcxx-ng 14.2.0 h4852527_1
     - patchelf 0.17.2 h58526e2_0
   run: []
+
+test:
+  commands:
+    - ollama --version
+    - ollama --help
+
 about:
   home: http://example.com
   license: MIT
   summary: A brief summary of the package.
+  description: |
+    **Note:** This package uses pre-built binaries from https://github.com/ollama/ollama/releases.
+    Building from source is not currently supported.
+
 extra:
   copy_test_source_files: true
   final: true
